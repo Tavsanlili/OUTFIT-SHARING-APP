@@ -6,17 +6,17 @@ import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import LandingPage from './pages/public/LandingPage';
 
-// 👇 YENİ EKLEME: Gerçek ExplorePage dosyasını buraya çağırıyoruz
-// (Dosyayı nereye kaydettiysen yolu ona göre düzelt, genelde pages klasöründedir)
+// User sayfaları
 import ExplorePage from './pages/user/ExplorePage'; 
 import MyOutfits from './pages/user/MyOutfits'; 
+
+// Organization sayfaları
+import OrgDashboard from './pages/organization/OrgDashboard';
+import OrganizationOutfitList from './pages/organization/OrganizationOutfitlist';
 
 // Layoutlar
 import DashboardLayout from './layouts/DashboardLayout';
 import PublicLayout from './layouts/PublicLayout';
-
-// Mock (Geçici) Sayfalar - ExplorePage'i sildik çünkü gerçeğini yukarıda import ettik
-const OrgDashboard = () => <div>📊 Firma Paneli</div>;
 
 function App() {
   return (
@@ -34,11 +34,13 @@ function App() {
 
         {/* --- GRUP 3: PANEL SAYFALARI --- */}
         <Route element={<DashboardLayout />}>
-           {/* Artık burası gerçek ExplorePage'i açacak */}
+           {/* User Routes */}
            <Route path="/explore" element={<ExplorePage />} />
-           
-           <Route path="/organization/dashboard" element={<OrgDashboard />} />
            <Route path="/my-outfits" element={<MyOutfits />} />
+           
+           {/* Organization Routes */}
+           <Route path="/organization/dashboard" element={<OrgDashboard />} />
+           <Route path="/organization/outfits" element={<OrganizationOutfitList />} />
         </Route>
 
         {/* Hatalı link yönlendirmesi */}

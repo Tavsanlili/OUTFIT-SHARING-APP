@@ -19,13 +19,29 @@ const LoginPage = () => {
     try {
       // --- SİMÜLASYON ---
       await new Promise(resolve => setTimeout(resolve, 1000));
-      const fakeRole = email.includes('admin') ? 'organization' : 'user';
-      const fakeToken = `eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoi${fakeRole}In0.signature`; 
+      
+      // Email'e göre role belirle
+      const fakeRole = email.includes('admin') || email.includes('koray') || email.includes('org') 
+        ? 'organization' 
+        : 'user';
+      
+      // Geçerli JWT token oluştur (Base64 encoded)
+      const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+      const payload = btoa(JSON.stringify({ 
+        role: fakeRole,
+        email: email,
+        exp: Math.floor(Date.now() / 1000) + (60 * 60) // 1 saat sonra expire
+      }));
+      const signature = "fake-signature";
+      
+      const fakeToken = `${header}.${payload}.${signature}`;
       const fakeRefreshToken = "refresh-token-ornek";
       // ------------------
 
+      // Store'a kaydet (otomatik olarak role parse eder)
       login(fakeToken, fakeRefreshToken);
 
+      // Role'e göre yönlendir
       if (fakeRole === 'organization') {
         navigate('/organization/dashboard');
       } else {
@@ -40,14 +56,12 @@ const LoginPage = () => {
   };
 
   return (
-    // 'fixed inset-0' ekranı kilitler ve tam kaplar.
     <div className="fixed inset-0 flex w-full h-full bg-white">
       
-      {/* SOL TARAFI: GRADIENT ALAN (Resim Yerine Renk Geçişi) */}
-      {/* from-indigo-900 to-purple-800 gibi sınıflar renk verir */}
+      {/* SOL TARAFI: GRADIENT ALAN */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-indigo-900 via-purple-900 to-black items-center justify-center overflow-hidden">
         
-        {/* Dekoratif Yuvarlaklar (Hareket hissi için) */}
+        {/* Dekoratif Yuvarlaklar */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
             <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
             <div className="absolute top-[20%] right-[-10%] w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
@@ -136,7 +150,8 @@ const LoginPage = () => {
             
             <div className="mt-8 border-t border-gray-100 pt-6">
                 <p className="text-xs text-center text-gray-400">
-                    Admin girişi için email içinde "admin" kelimesi geçmelidir.
+                    <strong>Demo Mod:</strong> Email'de "admin", "koray" veya "org" geçerse → Organization paneli<br/>
+                    Diğer emailler → User paneli
                 </p>
             </div>
 

@@ -15,12 +15,12 @@ export default function DashboardLayout() {
   // Link aktif mi kontrolü
   const getLinkClass = (path) => {
     return location.pathname === path
-      ? "block rounded-lg bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700"
+      ? "block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700"
       : "block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700";
   };
 
   return (
-    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden bg-white">
+    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden bg-gray-50">
       
       {/* --- SIDEBAR --- */}
       <div className="flex-none w-full md:w-64 bg-white border-r border-gray-200">
@@ -28,31 +28,33 @@ export default function DashboardLayout() {
           
           <div>
             {/* LOGO */}
-            <span className="grid h-10 w-40 place-content-center rounded-lg bg-indigo-100 text-xs text-indigo-600 font-bold tracking-widest uppercase">
-              SharingAPP
+            <span className="grid h-10 w-32 place-content-center rounded-lg bg-indigo-100 text-xs text-indigo-600 font-bold tracking-widest uppercase">
+              StylePoint
             </span>
 
             {/* MENÜ LİNKLERİ */}
             <ul className="mt-6 space-y-1">
-              {/* 1. KEŞFET */}
-              <li>
-                <Link to="/explore" className={getLinkClass('/explore')}>
-                  🔍 Keşfet
-                </Link>
-              </li>
+              {role === 'user' && (
+                <li>
+                  <Link to="/explore" className={getLinkClass('/explore')}>
+                    🔍 Keşfet
+                  </Link>
+                </li>
+              )}
+ 
 
-              {/* 2. DOLABIM (DÜZELTİLDİ: Artık kısıtlama yok, herkes görecek) */}
-              <li>
-                <Link to="/my-outfits" className={getLinkClass('/my-outfits')}>
-                  🧥 Dolabım
-                </Link>
-              </li>
-
-              {/* 3. FİRMA PANELİ (Sadece 'organization' rolü olanlar görsün) */}
               {role === 'organization' && (
                 <li>
                   <Link to="/organization/dashboard" className={getLinkClass('/organization/dashboard')}>
                     📊 Firma Paneli
+                  </Link>
+                </li>
+              )}
+
+              {role === 'user' && (
+                <li>
+                  <Link to="/my-outfits" className={getLinkClass('/my-outfits')}>
+                    🧥 Dolabım
                   </Link>
                 </li>
               )}
@@ -62,15 +64,12 @@ export default function DashboardLayout() {
           {/* ÇIKIŞ BUTONU */}
           <div className="sticky inset-x-0 bottom-0 border-t border-gray-100 pt-4">
             <div className="flex items-center gap-2">
-              <div className="h-10 w-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold shadow-sm">
+              <div className="h-10 w-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
                  {user?.email?.[0].toUpperCase() || "U"}
               </div>
               <div className="text-xs">
                 <p className="font-medium text-gray-900">{user?.email || "Kullanıcı"}</p>
-                <button 
-                  onClick={handleLogout} 
-                  className="mt-1 font-medium text-gray-500 hover:text-indigo-600 transition-colors"
-                >
+                <button onClick={handleLogout} className="mt-1 text-red-500 hover:text-red-700">
                   Çıkış Yap
                 </button>
               </div>
