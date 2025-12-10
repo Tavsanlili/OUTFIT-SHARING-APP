@@ -12,10 +12,10 @@ export default function DashboardLayout() {
     navigate('/login');
   };
 
-  // Link aktif mi kontrolü
+  // Link aktif mi kontrolü (Renklendirme temaya uygun hale getirildi)
   const getLinkClass = (path) => {
     return location.pathname === path
-      ? "block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700"
+      ? "block rounded-lg bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700"
       : "block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700";
   };
 
@@ -27,9 +27,9 @@ export default function DashboardLayout() {
         <div className="flex h-screen flex-col justify-between px-6 py-8">
           
           <div>
-            {/* LOGO */}
-            <span className="grid h-10 w-32 place-content-center rounded-lg bg-indigo-100 text-xs text-indigo-600 font-bold tracking-widest uppercase">
-              StylePoint
+            {/* LOGO (SharingAPP olarak güncellendi ve genişliği ayarlandı) */}
+            <span className="grid h-10 w-40 place-content-center rounded-lg bg-indigo-100 text-xs text-indigo-600 font-bold tracking-widest uppercase">
+              SharingAPP
             </span>
 
             {/* MENÜ LİNKLERİ */}
@@ -48,7 +48,8 @@ export default function DashboardLayout() {
                 </li>
               )}
 
-              {role === 'user' && (
+              {/* Dolabım linki hem User hem Org görebilsin diye genelde açık bırakılır veya role check yapılır */}
+              {(role === 'user' || role === 'organization') && (
                 <li>
                   <Link to="/my-outfits" className={getLinkClass('/my-outfits')}>
                     🧥 Dolabım
@@ -58,17 +59,23 @@ export default function DashboardLayout() {
             </ul>
           </div>
 
-          {/* ÇIKIŞ BUTONU */}
+          {/* ÇIKIŞ BUTONU (GÜNCELLENDİ) */}
           <div className="sticky inset-x-0 bottom-0 border-t border-gray-100 pt-4">
             <div className="flex items-center gap-2">
-              <div className="h-10 w-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
+              <div className="h-10 w-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold shadow-sm">
                  {user?.email?.[0].toUpperCase() || "U"}
               </div>
               <div className="text-xs">
                 <p className="font-medium text-gray-900">{user?.email || "Kullanıcı"}</p>
-                <button onClick={handleLogout} className="mt-1 text-red-500 hover:text-red-700">
+                
+                {/* 👇 BURAYI DEĞİŞTİRDİK: Kırmızı yerine Gri/Indigo yapıldı */}
+                <button 
+                  onClick={handleLogout} 
+                  className="mt-1 font-medium text-gray-500 hover:text-indigo-600 transition-colors"
+                >
                   Çıkış Yap
                 </button>
+
               </div>
             </div>
           </div>

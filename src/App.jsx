@@ -6,12 +6,15 @@ import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import LandingPage from './pages/public/LandingPage';
 
+// 👇 YENİ EKLEME: Gerçek ExplorePage dosyasını buraya çağırıyoruz
+// (Dosyayı nereye kaydettiysen yolu ona göre düzelt, genelde pages klasöründedir)
+import ExplorePage from './pages/user/ExplorePage'; 
+
 // Layoutlar
 import DashboardLayout from './layouts/DashboardLayout';
 import PublicLayout from './layouts/PublicLayout';
 
-// Mock (Geçici) Sayfalar - İleride bunları gerçek dosyalarla değiştireceğiz
-const ExplorePage = () => <div>🔍 Keşfet Sayfası</div>;
+// Mock (Geçici) Sayfalar - ExplorePage'i sildik çünkü gerçeğini yukarıda import ettik
 const OrgDashboard = () => <div>📊 Firma Paneli</div>;
 const MyOutfits = () => <div>🧥 Dolabım</div>;
 
@@ -20,26 +23,25 @@ function App() {
     <BrowserRouter>
       <Routes>
         
-        {/* --- GRUP 1: HALKA AÇIK SAYFALAR (Navbar ve Footer GÖRÜNÜR) --- */}
+        {/* --- GRUP 1: HALKA AÇIK SAYFALAR --- */}
         <Route element={<PublicLayout />}>
-           {/* Ana sayfaya (/) girince LandingPage açılır */}
            <Route path="/" element={<LandingPage />} />
         </Route>
 
-
-        {/* --- GRUP 2: GİRİŞ EKRANLARI (Navbar/Footer GÖRÜNMEZ) --- */}
+        {/* --- GRUP 2: GİRİŞ EKRANLARI --- */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-
-        {/* --- GRUP 3: PANEL SAYFALARI (Sidebar GÖRÜNÜR) --- */}
+        {/* --- GRUP 3: PANEL SAYFALARI --- */}
         <Route element={<DashboardLayout />}>
+           {/* Artık burası gerçek ExplorePage'i açacak */}
            <Route path="/explore" element={<ExplorePage />} />
+           
            <Route path="/organization/dashboard" element={<OrgDashboard />} />
            <Route path="/my-outfits" element={<MyOutfits />} />
         </Route>
 
-        {/* Hatalı link girilirse ana sayfaya yönlendir */}
+        {/* Hatalı link yönlendirmesi */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>

@@ -45,11 +45,15 @@ const LandingPage = () => {
           </div>
         </div>
         
-        {/* Sağ Taraf Görseli (Desktop) */}
-        <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 bg-purple-100">
+        {/* --- SAĞ TARAF GÖRSELİ (Düzenlendi) --- */}
+        {/* lg:inset-y-4 ve lg:right-4 -> Kenarlardan boşluk bırakır.
+            lg:rounded-[50px] -> Köşeleri ovalleştirir.
+            lg:p-12 -> Görseli mor kutunun içine doğru iter (küçültür).
+        */}
+        <div className="lg:absolute lg:inset-y-4 lg:right-4 lg:w-1/2 bg-purple-100 lg:rounded-[50px] lg:p-12 flex items-center justify-center">
           <img
-            className="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full opacity-90 hover:opacity-100 transition-opacity duration-500"
-            src="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80"
+            className="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-auto opacity-90 hover:opacity-100 transition-all duration-500 lg:rounded-3xl shadow-2xl"
+            src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1000&auto=format&fit=crop"
             alt="Fashion woman shopping"
           />
         </div>
