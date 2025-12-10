@@ -55,7 +55,7 @@ const ExplorePage = () => {
   }, [searchTerm, selectedTag]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-indigo-50/40 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
       
       <div className="max-w-7xl mx-auto">
         
