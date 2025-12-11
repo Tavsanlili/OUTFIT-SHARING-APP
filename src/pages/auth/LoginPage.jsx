@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
+import authService from '../../services/authService'; // ✅ API'yi import et
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -17,58 +18,73 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      // --- SİMÜLASYON ---
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // ✅ GERÇEK API'YE İSTEK YAP
+      const response = await authService.login({
+        email,
+        password
+      });
       
-      // Email'e göre role belirle
-      const fakeRole = email.includes('admin') || email.includes('koray') || email.includes('org') 
-        ? 'organization' 
-        : 'user';
+      // ✅ RESPONSE YAPISINI KONTROL ET (debug için)
+      console.log('API Response:', response);
       
-      // Geçerli JWT token oluştur (Base64 encoded)
-      const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
-      const payload = btoa(JSON.stringify({ 
-        role: fakeRole,
-        email: email,
-        exp: Math.floor(Date.now() / 1000) + (60 * 60) // 1 saat sonra expire
-      }));
-      const signature = "fake-signature";
+      // ✅ TOKEN'LARI AL (backend'in yapısına göre ayarla)
+      const accessToken = response.accessToken || response.data?.accessToken;
+      const refreshToken = response.refreshToken || response.data?.refreshToken;
       
-      const fakeToken = `${header}.${payload}.${signature}`;
-      const fakeRefreshToken = "refresh-token-ornek";
-      // ------------------
+      if (!accessToken) {
+        throw new Error('Token alınamadı');
+      }
 
-      // Store'a kaydet (otomatik olarak role parse eder)
-      login(fakeToken, fakeRefreshToken);
+      // ✅ STORE'A KAYDET
+      login(accessToken, refreshToken);
 
-      // Role'e göre yönlendir
-      if (fakeRole === 'organization') {
+      // ✅ TOKEN'I DECODE ETMEK İÇİN FONKSİYON
+      const decodeToken = (token) => {
+        try {
+          const payload = token.split('.')[1];
+          return JSON.parse(atob(payload));
+        } catch {
+          return { role: 'user' }; // fallback
+        }
+      };
+      
+      const decoded = decodeToken(accessToken);
+      const userRole = decoded.role || 'user';
+      
+      // ✅ ROLE'E GÖRE YÖNLENDİR
+      if (userRole === 'organization' || userRole === 'admin') {
         navigate('/organization/dashboard');
       } else {
         navigate('/explore');
       }
 
     } catch (err) {
-      setError('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
+      console.error('Login error:', err);
+      
+      // ✅ HATA MESAJINI BACKEND'DEN AL VEYA DEFAULT
+      const errorMessage = err.response?.data?.message 
+        || err.message 
+        || 'Giriş başarısız. Lütfen bilgilerinizi kontrol edin.';
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ GERİ KALAN TÜM KOD AYNI KALIYOR
   return (
     <div className="fixed inset-0 flex w-full h-full bg-white">
       
-      {/* SOL TARAFI: GRADIENT ALAN */}
+      {/* SOL TARAF: GRADIENT ALAN */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-indigo-900 via-purple-900 to-black items-center justify-center overflow-hidden">
         
-        {/* Dekoratif Yuvarlaklar */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
             <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
             <div className="absolute top-[20%] right-[-10%] w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
             <div className="absolute bottom-[-10%] left-[20%] w-96 h-96 bg-pink-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
         </div>
 
-        {/* Yazı Katmanı */}
         <div className="relative z-10 p-12 text-white">
           <div className="mb-6">
             <span className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase">
@@ -148,12 +164,13 @@ const LoginPage = () => {
                </p>
             </div>
             
-            <div className="mt-8 border-t border-gray-100 pt-6">
+            {/* ✅ DEMO BİLGİSİNİ KALDIRABİLİRSİN ARTIK */}
+            {/* <div className="mt-8 border-t border-gray-100 pt-6">
                 <p className="text-xs text-center text-gray-400">
                     <strong>Demo Mod:</strong> Email'de "admin", "koray" veya "org" geçerse → Organization paneli<br/>
                     Diğer emailler → User paneli
                 </p>
-            </div>
+            </div> */}
 
           </form>
         </div>
