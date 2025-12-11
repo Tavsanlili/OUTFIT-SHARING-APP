@@ -1,0 +1,24 @@
+[33mc56191a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeat/organization-dashboard[m[33m, [m[1;31morigin/feat/explore-page[m[33m, [m[1;32mfeat/explore-page[m[33m)[m HEAD@{0}: reset: moving to c56191a
+[33mb83d2ca[m[33m ([m[1;31morigin/feat/my-outfits[m[33m, [m[1;32mfeat/my-outfits[m[33m)[m HEAD@{1}: checkout: moving from feat/my-outfits to feat/organization-dashboard
+[33mb83d2ca[m[33m ([m[1;31morigin/feat/my-outfits[m[33m, [m[1;32mfeat/my-outfits[m[33m)[m HEAD@{2}: commit: Dolabim tasarimi uzerinede birtakım calısmalar yapıldı gelistirilmesi lazim
+[33mc56191a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeat/organization-dashboard[m[33m, [m[1;31morigin/feat/explore-page[m[33m, [m[1;32mfeat/explore-page[m[33m)[m HEAD@{3}: checkout: moving from feat/explore-page to feat/my-outfits
+[33mc56191a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeat/organization-dashboard[m[33m, [m[1;31morigin/feat/explore-page[m[33m, [m[1;32mfeat/explore-page[m[33m)[m HEAD@{4}: commit: explore-page detaylandirma
+[33m6a8ca5c[m HEAD@{5}: commit: feat: add user ExplorePage structure
+[33m600b76a[m[33m ([m[1;31morigin/feat/setup-public-router[m[33m, [m[1;32mfeat/setup-public-router[m[33m)[m HEAD@{6}: checkout: moving from feat/setup-public-router to feat/explore-page
+[33m600b76a[m[33m ([m[1;31morigin/feat/setup-public-router[m[33m, [m[1;32mfeat/setup-public-router[m[33m)[m HEAD@{7}: commit: landing page finished,Navbar,Footer,Register added
+[33m3458355[m[33m ([m[1;31morigin/feat/login-ui[m[33m)[m HEAD@{8}: reset: moving to 3458355
+[33mce72e75[m HEAD@{9}: commit: Navbar and footer added
+[33mc4ae242[m HEAD@{10}: checkout: moving from feat/login-ui to feat/setup-public-router
+[33m3f20f03[m[33m ([m[1;32mfeat/login-ui[m[33m)[m HEAD@{11}: commit: fix: update axios instance with production API endpoints and improve error handling
+[33m3458355[m[33m ([m[1;31morigin/feat/login-ui[m[33m)[m HEAD@{12}: commit: Login tasarımı yenilendi ve Tailwind v3 ayarları düzeltildi
+[33m3fee279[m[33m ([m[1;31morigin/feat/protected-routes[m[33m, [m[1;32mfeat/protected-routes[m[33m)[m HEAD@{13}: checkout: moving from feat/protected-routes to feat/login-ui
+[33m3fee279[m[33m ([m[1;31morigin/feat/protected-routes[m[33m, [m[1;32mfeat/protected-routes[m[33m)[m HEAD@{14}: commit: feat: PrivateRoute ve RoleRoute ile güvenlik eklendi
+[33m75aa20f[m[33m ([m[1;31morigin/feat/auth-logic[m[33m, [m[1;32mfeat/auth-logic[m[33m)[m HEAD@{15}: checkout: moving from feat/auth-logic to feat/protected-routes
+[33m75aa20f[m[33m ([m[1;31morigin/feat/auth-logic[m[33m, [m[1;32mfeat/auth-logic[m[33m)[m HEAD@{16}: commit: feat:Auth store ve axios interceptor yapisi kuruldu
+[33mc4ae242[m HEAD@{17}: checkout: moving from feat/setup-public-router to feat/auth-logic
+[33mc4ae242[m HEAD@{18}: checkout: moving from main to feat/setup-public-router
+[33mcdcad9c[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{19}: checkout: moving from feat/setup-public-router to main
+[33mc4ae242[m HEAD@{20}: commit: feet: add React Router setup with landing and about pages
+[33mcdcad9c[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{21}: checkout: moving from main to feat/setup-public-router
+[33mcdcad9c[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{22}: Branch: renamed refs/heads/master to refs/heads/main
+[33mcdcad9c[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{24}: commit (initial): ikinci commit
