@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import LandingPage from './pages/public/LandingPage';
+import AboutPage from './pages/public/AboutPage';
 
 // User sayfaları
 import ExplorePage from './pages/user/ExplorePage'; 
@@ -27,6 +28,7 @@ function App() {
         {/* --- GRUP 1: HALKA AÇIK SAYFALAR --- */}
         <Route element={<PublicLayout />}>
            <Route path="/" element={<LandingPage />} />
+           <Route path="/about" element={<AboutPage />} />
         </Route>
 
         {/* --- GRUP 2: GİRİŞ EKRANLARI --- */}

@@ -11,7 +11,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <div className="bg-white p-2 rounded-lg shadow-md">
-                <span className="text-2xl">👗</span>
+                <span className="text-2xl"></span>
               </div>
               <span className="text-white font-bold text-xl">Sharing APP</span>
             </div>
@@ -65,11 +65,11 @@ const Footer = () => {
             <ul className="space-y-2 text-purple-200 text-sm">
               <li className="flex items-center space-x-2">
                 <span>📧</span>
-                <span>support@sharingapp.com</span>
+                <span>Koray05koray@hotmail.com</span>
               </li>
               <li className="flex items-center space-x-2">
                 <span>📱</span>
-                <span>+90 (555) 123-4567</span>
+                <span>+90 (539) 457 8705</span>
               </li>
             </ul>
             <div className="mt-4 flex space-x-4">
