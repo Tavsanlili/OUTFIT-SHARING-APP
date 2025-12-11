@@ -9,6 +9,7 @@ import LandingPage from './pages/public/LandingPage';
 // 👇 YENİ EKLEME: Gerçek ExplorePage dosyasını buraya çağırıyoruz
 // (Dosyayı nereye kaydettiysen yolu ona göre düzelt, genelde pages klasöründedir)
 import ExplorePage from './pages/user/ExplorePage'; 
+import MyOutfits from './pages/user/MyOutfits'; 
 
 // Layoutlar
 import DashboardLayout from './layouts/DashboardLayout';
@@ -16,7 +17,6 @@ import PublicLayout from './layouts/PublicLayout';
 
 // Mock (Geçici) Sayfalar - ExplorePage'i sildik çünkü gerçeğini yukarıda import ettik
 const OrgDashboard = () => <div>📊 Firma Paneli</div>;
-const MyOutfits = () => <div>🧥 Dolabım</div>;
 
 function App() {
   return (
