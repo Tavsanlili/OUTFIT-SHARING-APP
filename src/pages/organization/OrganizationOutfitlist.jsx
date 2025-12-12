@@ -1,88 +1,110 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // ✅ useEffect ekle
+import itemService from '../../services/itemService'; // ✅ API servisini import et
 
 const OrganizationOutfitList = () => {
-  // Demo outfit verileri
-  const allOutfits = [
-    {
-      id: 1,
-      name: 'Yaz Kombini 2024',
-      image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400',
-      tags: ['Casual', 'Summer', 'Beach'],
-      description: 'Hafif ve rahat bir yaz kombini. Plaj için ideal.',
-      createdAt: '2024-12-10'
-    },
-    {
-      id: 2,
-      name: 'İş Görüşmesi Stili',
-      image: 'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=400',
-      tags: ['Formal', 'Business', 'Professional'],
-      description: 'Profesyonel ve şık görünüm. İş toplantıları için mükemmel.',
-      createdAt: '2024-12-09'
-    },
-    {
-      id: 3,
-      name: 'Sokak Modası',
-      image: 'https://images.unsplash.com/photo-1495385794356-15371f348c31?w=400',
-      tags: ['Streetwear', 'Urban', 'Casual'],
-      description: 'Modern ve rahat sokak stili. Günlük kullanım için harika.',
-      createdAt: '2024-12-08'
-    },
-    {
-      id: 4,
-      name: 'Kış Şıklığı',
-      image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=400',
-      tags: ['Winter', 'Formal', 'Elegant'],
-      description: 'Kış akşamları için zarif bir kombin.',
-      createdAt: '2024-12-07'
-    },
-    {
-      id: 5,
-      name: 'Spor Görünüm',
-      image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400',
-      tags: ['Sport', 'Athletic', 'Casual'],
-      description: 'Spor ve rahat bir stil. Aktif günler için.',
-      createdAt: '2024-12-06'
-    },
-    {
-      id: 6,
-      name: 'Vintage Tarz',
-      image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400',
-      tags: ['Vintage', 'Retro', 'Classic'],
-      description: 'Nostaljik ve benzersiz bir görünüm.',
-      createdAt: '2024-12-05'
-    },
-    {
-      id: 7,
-      name: 'Akşam Yemeği',
-      image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=400',
-      tags: ['Formal', 'Evening', 'Elegant'],
-      description: 'Özel akşamlar için şık bir seçenek.',
-      createdAt: '2024-12-04'
-    },
-    {
-      id: 8,
-      name: 'Bohem Stil',
-      image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400',
-      tags: ['Bohemian', 'Casual', 'Artistic'],
-      description: 'Özgür ruhlu ve sanatsal bir kombinasyon.',
-      createdAt: '2024-12-03'
-    }
-  ];
-
+  const [outfits, setOutfits] = useState([]); // ✅ Demo verileri kaldır, API'den al
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true); // ✅ Loading state ekle
+  const [error, setError] = useState(null); // ✅ Error state ekle
   const itemsPerPage = 6;
 
-  // Filtreleme ve sıralama
+  // ✅ API'den outfit'leri çek
+  useEffect(() => {
+    fetchOutfits();
+  }, []); // ✅ Sadece component mount olduğunda çalışsın
+
+  const fetchOutfits = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // ✅ API'ye istek gönder
+      const response = await itemService.getItems({
+        // İstersen buraya filtreleme parametreleri ekleyebilirsin
+        // sort: sortOrder,
+        // page: currentPage,
+        // limit: itemsPerPage
+      });
+      
+      // ✅ Response yapısına göre outfits'i al
+      console.log('API Response:', response); // Debug için
+      
+      // Backend'in response yapısına göre ayarla:
+      // Eğer response.data içinde array varsa: response.data.items || response.data
+      // Eğer direkt array ise: response
+      const outfitsData = response.data?.items || response.data || response;
+      
+      if (Array.isArray(outfitsData)) {
+        setOutfits(outfitsData);
+      } else {
+        console.warn('Beklenen array formatı gelmedi:', outfitsData);
+        setOutfits([]);
+      }
+      
+    } catch (err) {
+      console.error('Outfit çekme hatası:', err);
+      setError('Outfit\'ler yüklenirken bir hata oluştu.');
+      setOutfits([]); // Hata durumunda boş array
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Delete fonksiyonunu API ile çalışır hale getir
+  const handleDelete = async (id) => {
+    if (!window.confirm('Bu outfit\'i silmek istediğinize emin misiniz?')) {
+      return;
+    }
+
+    try {
+      // ✅ API'ye silme isteği gönder
+      await itemService.deleteItem(id);
+      
+      // ✅ Başarılı olursa local state'den kaldır
+      setOutfits(prev => prev.filter(outfit => outfit.id !== id));
+      
+      alert('Outfit başarıyla silindi!');
+      
+    } catch (err) {
+      console.error('Silme hatası:', err);
+      alert('Outfit silinirken bir hata oluştu.');
+    }
+  };
+
+  // ✅ Detay göster fonksiyonu
+  const handleShowDetails = async (id) => {
+    try {
+      // ✅ API'den tek outfit detayını al
+      const response = await itemService.getItem(id);
+      console.log('Outfit detayı:', response);
+      
+      // Burada modal açabilir veya detay sayfasına yönlendirebilirsin
+      alert(`Outfit detayları:\n${JSON.stringify(response.data || response, null, 2)}`);
+      
+    } catch (err) {
+      console.error('Detay çekme hatası:', err);
+      alert('Outfit detayları yüklenirken bir hata oluştu.');
+    }
+  };
+
+  // ✅ Düzenle fonksiyonu
+  const handleEdit = (id) => {
+    // Düzenleme sayfasına yönlendir veya modal aç
+    alert(`Outfit #${id} düzenleme sayfasına yönlendiriliyor...`);
+    // navigate(`/edit-outfit/${id}`);
+  };
+
+  // Filtreleme ve sıralama (LOCAL - API'den gelmiş veriler üzerinde)
   const getFilteredOutfits = () => {
-    let filtered = [...allOutfits];
+    let filtered = [...outfits];
 
     // Arama
     if (searchTerm) {
       filtered = filtered.filter(outfit =>
-        outfit.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        outfit.description.toLowerCase().includes(searchTerm.toLowerCase())
+        outfit.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        outfit.description?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -90,13 +112,13 @@ const OrganizationOutfitList = () => {
     filtered.sort((a, b) => {
       switch (sortOrder) {
         case 'newest':
-          return new Date(b.createdAt) - new Date(a.createdAt);
+          return new Date(b.createdAt || b.created_date) - new Date(a.createdAt || a.created_date);
         case 'oldest':
-          return new Date(a.createdAt) - new Date(b.createdAt);
+          return new Date(a.createdAt || a.created_date) - new Date(b.createdAt || b.created_date);
         case 'a-z':
-          return a.name.localeCompare(b.name);
+          return (a.name || '').localeCompare(b.name || '');
         case 'z-a':
-          return b.name.localeCompare(a.name);
+          return (b.name || '').localeCompare(a.name || '');
         default:
           return 0;
       }
@@ -127,20 +149,52 @@ const OrganizationOutfitList = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm('Bu outfit\'i silmek istediğinize emin misiniz?')) {
-      alert(`Outfit #${id} silindi (Demo mode - gerçekte API'ye istek gönderilecek)`);
-    }
-  };
+  // ✅ LOADING DURUMU
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center py-16">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+          <p className="text-gray-600">Outfit'ler yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ✅ ERROR DURUMU
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-red-50 text-red-600 p-6 rounded-lg">
+          <p className="font-bold mb-2">⚠️ Hata</p>
+          <p>{error}</p>
+          <button 
+            onClick={fetchOutfits}
+            className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+          >
+            Tekrar Dene
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">👗 Outfit Yönetimi</h1>
-        <p className="text-gray-600">
-          Toplam {filteredOutfits.length} outfit bulundu
-        </p>
+      <div className="mb-8 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">👗 Outfit Yönetimi</h1>
+          <p className="text-gray-600">
+            Toplam {filteredOutfits.length} outfit bulundu
+          </p>
+        </div>
+        <button
+          onClick={fetchOutfits} // ✅ Yenile butonu
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        >
+          🔄 Yenile
+        </button>
       </div>
 
       {/* Search & Sort Bar */}
@@ -188,7 +242,7 @@ const OrganizationOutfitList = () => {
         <div className="text-center py-16 bg-white rounded-lg shadow">
           <div className="text-6xl mb-4">🔍</div>
           <p className="text-xl text-gray-500 mb-2">Hiç outfit bulunamadı</p>
-          <p className="text-gray-400">Arama teriminizi değiştirmeyi deneyin</p>
+          <p className="text-gray-400">Yeni outfit eklemeyi deneyin</p>
         </div>
       ) : (
         <>
@@ -198,6 +252,8 @@ const OrganizationOutfitList = () => {
                 key={outfit.id}
                 outfit={outfit}
                 onDelete={handleDelete}
+                onShowDetails={handleShowDetails} // ✅ Yeni prop
+                onEdit={handleEdit} // ✅ Yeni prop
               />
             ))}
           </div>
@@ -216,62 +272,71 @@ const OrganizationOutfitList = () => {
   );
 };
 
-// Outfit Card Component
-const OutfitCard = ({ outfit, onDelete }) => {
+// Outfit Card Component - Props güncellendi
+const OutfitCard = ({ outfit, onDelete, onShowDetails, onEdit }) => {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
       {/* Image */}
       <div className="relative h-64 bg-gray-200 overflow-hidden">
         <img
-          src={outfit.image}
+          src={outfit.image || outfit.photoUrl || 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400'}
           alt={outfit.name}
           className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+          onError={(e) => {
+            e.target.src = 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400';
+          }}
         />
       </div>
 
       {/* Content */}
       <div className="p-4">
         <h3 className="font-semibold text-lg mb-2 line-clamp-1">
-          {outfit.name}
+          {outfit.name || 'İsimsiz Outfit'}
         </h3>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-3">
-          {outfit.tags.slice(0, 3).map((tag, index) => (
-            <span
-              key={index}
-              className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full"
-            >
-              {tag}
-            </span>
-          ))}
-          {outfit.tags.length > 3 && (
-            <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-              +{outfit.tags.length - 3}
-            </span>
-          )}
-        </div>
+        {outfit.tags && outfit.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-3">
+            {outfit.tags.slice(0, 3).map((tag, index) => (
+              <span
+                key={index}
+                className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full"
+              >
+                {typeof tag === 'string' ? tag : tag.name || tag.id}
+              </span>
+            ))}
+            {outfit.tags.length > 3 && (
+              <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                +{outfit.tags.length - 3}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Description */}
-        <p className="text-gray-600 text-sm line-clamp-2 mb-3">
-          {outfit.description}
-        </p>
+        {outfit.description && (
+          <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+            {outfit.description}
+          </p>
+        )}
 
         {/* Date */}
-        <p className="text-gray-400 text-xs mb-4">
-          {new Date(outfit.createdAt).toLocaleDateString('tr-TR')}
-        </p>
+        {outfit.createdAt && (
+          <p className="text-gray-400 text-xs mb-4">
+            {new Date(outfit.createdAt).toLocaleDateString('tr-TR')}
+          </p>
+        )}
 
         {/* Actions */}
         <div className="flex gap-2">
           <button
-            onClick={() => alert(`Outfit #${outfit.id} detayları gösteriliyor...`)}
+            onClick={() => onShowDetails(outfit.id)}
             className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
           >
             Detay
           </button>
           <button
-            onClick={() => alert(`Outfit #${outfit.id} düzenleniyor...`)}
+            onClick={() => onEdit(outfit.id)}
             className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             title="Düzenle"
           >
@@ -290,7 +355,7 @@ const OutfitCard = ({ outfit, onDelete }) => {
   );
 };
 
-// Pagination Component
+// Pagination Component (Aynı kalıyor)
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const getPageNumbers = () => {
     const pages = [];

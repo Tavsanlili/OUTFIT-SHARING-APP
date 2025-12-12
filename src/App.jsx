@@ -5,10 +5,14 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import LandingPage from './pages/public/LandingPage';
+import AboutPage from './pages/public/AboutPage';
 
 // User sayfaları
 import ExplorePage from './pages/user/ExplorePage'; 
-import MyOutfits from './pages/user/MyOutfits'; 
+import MyOutfits from './pages/user/MyOutfits';
+import AddOutfit from './pages/user/AddOutfit';
+import EditOutfit from './pages/user/EditOutfit';
+import OutfitDetail from './pages/user/OutfitDetail'; 
 
 // Organization sayfaları
 import OrgDashboard from './pages/organization/OrgDashboard';
@@ -27,6 +31,7 @@ function App() {
         {/* --- GRUP 1: HALKA AÇIK SAYFALAR --- */}
         <Route element={<PublicLayout />}>
            <Route path="/" element={<LandingPage />} />
+           <Route path="/about" element={<AboutPage />} />
         </Route>
 
         {/* --- GRUP 2: GİRİŞ EKRANLARI --- */}
@@ -38,6 +43,10 @@ function App() {
            {/* User Routes */}
            <Route path="/explore" element={<ExplorePage />} />
            <Route path="/my-outfits" element={<MyOutfits />} />
+           <Route path="/explore" element={<ExplorePage />} />
+           <Route path="/my-outfits/add" element={<AddOutfit />} />
+           <Route path="/my-outfits/edit/:id" element={<EditOutfit />} />
+           <Route path="/my-outfits/:id" element={<OutfitDetail />} />
            
            {/* Organization Routes */}
            <Route path="/organization/dashboard" element={<OrgDashboard />} />
