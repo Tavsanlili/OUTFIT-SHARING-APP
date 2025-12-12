@@ -12,7 +12,8 @@ import MyOutfits from './pages/user/MyOutfits';
 
 // Organization sayfaları
 import OrgDashboard from './pages/organization/OrgDashboard';
-import OrganizationOutfitList from './pages/organization/OrganizationOutfitlist';
+import OrganizationOutfitList from './pages/organization/OrganizationOutfitList';
+import TagManagement from './pages/organization/TagManagement';
 
 // Layoutlar
 import DashboardLayout from './layouts/DashboardLayout';
@@ -41,6 +42,7 @@ function App() {
            {/* Organization Routes */}
            <Route path="/organization/dashboard" element={<OrgDashboard />} />
            <Route path="/organization/outfits" element={<OrganizationOutfitList />} />
+           <Route path="/organization/tags" element={<TagManagement />} />
         </Route>
 
         {/* Hatalı link yönlendirmesi */}
