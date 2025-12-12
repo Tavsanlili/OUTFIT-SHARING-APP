@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // ✅ EKLENEN
 import { 
   Plus, 
   Heart, 
@@ -8,10 +9,11 @@ import {
   Grid,
   Loader2
 } from 'lucide-react';
-import itemService from '../../services/itemService'; // ✅ API servisi
-import useAuthStore from '../../store/authStore'; // ✅ Auth store
+import itemService from '../../services/itemService';
+import useAuthStore from '../../store/authStore';
 
 const MyOutfits = () => {
+  const navigate = useNavigate(); // ✅ EKLENEN
   const [activeTab, setActiveTab] = useState('combinations');
   const [combinations, setCombinations] = useState([]);
   const [favorites, setFavorites] = useState([]);
@@ -19,9 +21,8 @@ const MyOutfits = () => {
   const [error, setError] = useState(null);
   const [adding, setAdding] = useState(false);
   
-  const user = useAuthStore((state) => state.user); // ✅ Kullanıcı bilgisi
+  const user = useAuthStore((state) => state.user);
 
-  // ✅ API'den outfit'leri çek
   useEffect(() => {
     fetchOutfits();
   }, []);
@@ -31,20 +32,13 @@ const MyOutfits = () => {
       setLoading(true);
       setError(null);
       
-      // ✅ API'ye istek gönder
-      const response = await itemService.getItems({
-        // Kullanıcıya özel outfit'leri çekmek için parametre ekleyebilirsin
-        // userId: user?.id,
-        // limit: 20
-      });
+      const response = await itemService.getItems({});
       
-      console.log('Outfits response:', response); // Debug için
+      console.log('Outfits response:', response);
       
-      // ✅ Response yapısına göre outfits'i al
       const outfitsData = response.data?.items || response.data || response;
       
       if (Array.isArray(outfitsData)) {
-        // ✅ Kullanıcıya özel outfit'leri filtrele (eğer backend filtrelemiyorsa)
         const userOutfits = outfitsData.filter(outfit => 
           outfit.userId === user?.id || outfit.userEmail === user?.email
         );
@@ -55,10 +49,9 @@ const MyOutfits = () => {
           items: outfit.tags?.length || outfit.itemsCount || 0,
           image: outfit.image || outfit.photoUrl || 'https://images.unsplash.com/photo-1504198458649-3128b932f49e?w=800&q=80',
           date: formatDate(outfit.createdAt || outfit.created_date),
-          outfitData: outfit // Tam veriyi sakla
+          outfitData: outfit
         })));
         
-        // ✅ Favorileri çek (şimdilik boş bırak)
         setFavorites([]);
       } else {
         console.warn('Beklenen array formatı gelmedi:', outfitsData);
@@ -76,7 +69,6 @@ const MyOutfits = () => {
     }
   };
 
-  // ✅ Tarihi formatla
   const formatDate = (dateString) => {
     if (!dateString) return 'Yakın zamanda';
     
@@ -93,7 +85,6 @@ const MyOutfits = () => {
     return date.toLocaleDateString('tr-TR');
   };
 
-  // ✅ Kombin sil
   const handleDeleteCombo = async (id) => {
     if (!window.confirm("Bu kombini silmek istediğine emin misin?")) {
       return;
@@ -101,87 +92,34 @@ const MyOutfits = () => {
 
     try {
       await itemService.deleteItem(id);
-      
-      // ✅ Local state'den kaldır
       setCombinations(prev => prev.filter(item => item.id !== id));
-      
       alert('Kombin başarıyla silindi!');
-      
     } catch (err) {
       console.error('Silme hatası:', err);
       alert('Kombin silinirken bir hata oluştu.');
     }
   };
 
-  // ✅ Favori sil (şimdilik local)
   const handleDeleteFavorite = (id) => {
     setFavorites(prev => prev.filter(item => item.id !== id));
   };
 
-  // ✅ Yeni kombin ekle
-  const handleAddCombo = async () => {
-    try {
-      setAdding(true);
-      
-      // ✅ Yeni outfit için data oluştur
-      const newOutfitData = {
-        name: `Yeni Kombin #${combinations.length + 1}`,
-        description: 'Yeni oluşturulan kombin',
-        value: 0,
-        tags: [],
-        // userId: user?.id, // Backend'e gönder
-        // organizationId: user?.organizationId
-      };
-
-      console.log('Gönderilen outfit data:', newOutfitData);
-      
-      const response = await itemService.addItem(newOutfitData);
-      
-      console.log('Outfit ekleme response:', response);
-      
-      // ✅ Yeni outfit'i state'e ekle
-      const newOutfit = {
-        id: response.id || response.data?.id || Date.now(),
-        name: newOutfitData.name,
-        items: 0,
-        image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500',
-        date: 'Az önce',
-        outfitData: response.data || response
-      };
-      
-      setCombinations(prev => [newOutfit, ...prev]);
-      
-      // ✅ Kullanıcıyı edit sayfasına yönlendir
-      alert('Yeni kombin oluşturuldu! Şimdi düzenleyebilirsin.');
-      // navigate(`/edit-outfit/${newOutfit.id}`);
-      
-    } catch (err) {
-      console.error('Outfit ekleme hatası:', err);
-      alert('Kombin eklenirken bir hata oluştu.');
-    } finally {
-      setAdding(false);
-    }
+  // ✅ DEĞİŞTİRİLDİ: Yeni sayfaya yönlendir
+  const handleAddCombo = () => {
+    navigate('/my-outfits/add');
   };
 
-  // ✅ Outfit detayı göster
-  const handleShowDetails = async (outfitId, outfitData) => {
-    try {
-      if (outfitData) {
-        // Local data varsa onu göster
-        alert(`Kombin Detayları:\n${JSON.stringify(outfitData, null, 2)}`);
-      } else {
-        // API'den tekrar çek
-        const response = await itemService.getItem(outfitId);
-        console.log('Outfit detay:', response);
-        alert(`Kombin Detayları:\n${JSON.stringify(response.data || response, null, 2)}`);
-      }
-    } catch (err) {
-      console.error('Detay çekme hatası:', err);
-      alert('Kombin detayları yüklenirken bir hata oluştu.');
-    }
+  // ✅ DEĞİŞTİRİLDİ: Detay sayfasına yönlendir
+  const handleShowDetails = (outfitId) => {
+    navigate(`/my-outfits/${outfitId}`);
   };
 
-  // ✅ LOADING DURUMU
+  // ✅ EKLENEN: Düzenleme sayfasına yönlendir
+  const handleEditOutfit = (outfitId, e) => {
+    e.stopPropagation();
+    navigate(`/my-outfits/edit/${outfitId}`);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-8 flex items-center justify-center">
@@ -193,7 +131,6 @@ const MyOutfits = () => {
     );
   }
 
-  // ✅ ERROR DURUMU
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-8">
@@ -214,7 +151,6 @@ const MyOutfits = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-8">
       
-      {/* BAŞLIK */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-indigo-900 tracking-tight">Dolabım</h1>
@@ -223,7 +159,6 @@ const MyOutfits = () => {
           </p>
         </div>
         
-        {/* Üstteki Yeni Ekle Butonu */}
         <button 
           onClick={handleAddCombo}
           disabled={adding}
@@ -243,7 +178,6 @@ const MyOutfits = () => {
         </button>
       </div>
 
-      {/* TAB BUTONLARI */}
       <div className="bg-white/60 backdrop-blur-sm p-1.5 rounded-2xl shadow-sm border border-indigo-50 inline-flex mb-8 w-full md:w-auto">
         <button 
           onClick={() => setActiveTab('combinations')}
@@ -269,7 +203,6 @@ const MyOutfits = () => {
         </button>
       </div>
 
-      {/* --- KOMBİNLERİM SEKMESİ --- */}
       {activeTab === 'combinations' && (
         <>
           {combinations.length === 0 ? (
@@ -290,7 +223,7 @@ const MyOutfits = () => {
                 <div key={combo.id} className="group bg-white rounded-3xl border border-indigo-50 overflow-hidden hover:shadow-xl hover:shadow-indigo-500/10 hover:border-indigo-200 transition-all duration-300 cursor-pointer">
                   <div 
                     className="relative h-56 overflow-hidden cursor-pointer"
-                    onClick={() => handleShowDetails(combo.id, combo.outfitData)}
+                    onClick={() => handleShowDetails(combo.id)} // ✅ DEĞİŞTİRİLDİ
                   >
                     <img 
                       src={combo.image} 
@@ -301,7 +234,6 @@ const MyOutfits = () => {
                       }}
                     />
                     
-                    {/* 🗑️ SİLME BUTONU */}
                     <div 
                       onClick={(e) => {
                         e.stopPropagation();
@@ -316,14 +248,15 @@ const MyOutfits = () => {
                   <div className="p-6">
                     <div className="flex justify-between items-start mb-3">
                       <h3 
-                        onClick={() => handleShowDetails(combo.id, combo.outfitData)}
+                        onClick={() => handleShowDetails(combo.id)} // ✅ DEĞİŞTİRİLDİ
                         className="text-lg font-bold text-indigo-900 group-hover:text-indigo-600 transition-colors cursor-pointer"
                       >
                         {combo.name}
                       </h3>
                       <button 
-                        onClick={() => alert("Detay menüsü yakında eklenecek!")}
+                        onClick={(e) => handleEditOutfit(combo.id, e)} // ✅ DEĞİŞTİRİLDİ
                         className="!bg-transparent !p-2 rounded-full !text-indigo-300 hover:!bg-indigo-50 hover:!text-indigo-600 transition-colors"
+                        title="Düzenle"
                       >
                         <MoreVertical size={20} />
                       </button>
@@ -339,7 +272,6 @@ const MyOutfits = () => {
                 </div>
               ))}
               
-              {/* Kart İçindeki Yeni Ekle Butonu */}
               <button 
                 onClick={handleAddCombo}
                 disabled={adding}
@@ -373,7 +305,6 @@ const MyOutfits = () => {
         </>
       )}
 
-      {/* --- FAVORİLERİM SEKMESİ --- */}
       {activeTab === 'favorites' && (
         <>
           {favorites.length === 0 ? (
@@ -397,7 +328,6 @@ const MyOutfits = () => {
                     />
                   </div>
                   
-                  {/* ❤️ KALP BUTONU */}
                   <button 
                     onClick={() => handleDeleteFavorite(fav.id)}
                     className="absolute top-3 right-3 p-2.5 bg-white/90 backdrop-blur-md rounded-full shadow-sm text-red-500 hover:bg-red-50 hover:scale-110 transition-all border border-indigo-50"
@@ -424,7 +354,6 @@ const MyOutfits = () => {
         </>
       )}
 
-      {/* Refresh Butonu */}
       <div className="mt-8 text-center">
         <button
           onClick={fetchOutfits}

@@ -9,7 +9,10 @@ import AboutPage from './pages/public/AboutPage';
 
 // User sayfaları
 import ExplorePage from './pages/user/ExplorePage'; 
-import MyOutfits from './pages/user/MyOutfits'; 
+import MyOutfits from './pages/user/MyOutfits';
+import AddOutfit from './pages/user/AddOutfit';
+import EditOutfit from './pages/user/EditOutfit';
+import OutfitDetail from './pages/user/OutfitDetail'; 
 
 // Organization sayfaları
 import OrgDashboard from './pages/organization/OrgDashboard';
@@ -40,6 +43,10 @@ function App() {
            {/* User Routes */}
            <Route path="/explore" element={<ExplorePage />} />
            <Route path="/my-outfits" element={<MyOutfits />} />
+           <Route path="/explore" element={<ExplorePage />} />
+           <Route path="/my-outfits/add" element={<AddOutfit />} />
+           <Route path="/my-outfits/edit/:id" element={<EditOutfit />} />
+           <Route path="/my-outfits/:id" element={<OutfitDetail />} />
            
            {/* Organization Routes */}
            <Route path="/organization/dashboard" element={<OrgDashboard />} />
