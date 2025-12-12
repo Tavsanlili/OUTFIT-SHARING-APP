@@ -12,7 +12,7 @@ import ExplorePage from './pages/user/ExplorePage';
 import MyOutfits from './pages/user/MyOutfits';
 import AddOutfit from './pages/user/AddOutfit';
 import EditOutfit from './pages/user/EditOutfit';
-import OutfitDetail from './pages/user/OutfitDetail'; 
+import OutfitDetail from './pages/user/OutfitDetail';
 
 // Organization sayfaları
 import OrgDashboard from './pages/organization/OrgDashboard';
@@ -42,11 +42,16 @@ function App() {
         <Route element={<DashboardLayout />}>
            {/* User Routes */}
            <Route path="/explore" element={<ExplorePage />} />
+           
            <Route path="/my-outfits" element={<MyOutfits />} />
-           <Route path="/explore" element={<ExplorePage />} />
            <Route path="/my-outfits/add" element={<AddOutfit />} />
            <Route path="/my-outfits/edit/:id" element={<EditOutfit />} />
+           
+           {/* 👇 EKSİK OLAN VE DOLABIM HATASINI ÇÖZECEK SATIR BU 👇 */}
            <Route path="/my-outfits/:id" element={<OutfitDetail />} />
+           
+           {/* Eski linkler de çalışsın diye bu da kalsın */}
+           <Route path="/outfit/:id" element={<OutfitDetail />} />
            
            {/* Organization Routes */}
            <Route path="/organization/dashboard" element={<OrgDashboard />} />
